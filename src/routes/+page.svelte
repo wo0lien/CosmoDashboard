@@ -1,36 +1,61 @@
 <div>
-    <Button on:click={() => clicked++}>
-        <Label>Default</Label>
-    </Button>
-    <Button on:click={() => clicked++} disabled>
-        <Label>Disabled</Label>
-    </Button>
-    <Button on:click={() => clicked++} ripple={false}>
-        <Label>No Ripple</Label>
-    </Button>
-    <!--
-      Note: to target this class, you need to use
-      a :global() selector. See the styles below.
-    -->
-    <Button on:click={() => clicked++} class="myClass">
-        <Label>With a Class</Label>
-    </Button>
+    <LayoutGrid>
+        <Cell span="{12}">
+            <h1>Inscription bénévole aux events ESN</h1>
+        </Cell>
+
+<!--        <Cell span="{12}">-->
+<!--            <p class="text">Entre ici l'email utilisé pour ton inscription sur AssoConnect !</p>-->
+<!--        </Cell>-->
+
+
+        <Cell span="{12}">
+                <Textfield class="centered" variant="outlined" bind:value={emailValue} label="Email">
+                    <HelperText slot="helper">Entre ici l'email utilisé pour ton inscription sur AssoConnect !</HelperText>
+                </Textfield>
+        </Cell>
+
+
+
+        <Cell span="{12}">
+                <Button class="centered" variant="raised">
+                    <Label>Valider</Label>
+                </Button>
+        </Cell>
+
+    </LayoutGrid>
 </div>
 
-<pre class="status">Clicked: {clicked}</pre>
 
 <script lang="ts">
-    import Button, { Label } from '@smui/button';
+    import Button, {Label} from '@smui/button';
+    import Textfield from "@smui/textfield";
+    import LayoutGrid, {Cell} from '@smui/layout-grid';
+    import HelperText from "@smui/textfield/helper-text";
 
-    let clicked = 0;
+    let emailValue = ''
 </script>
 
 <style>
-    /* Accessing the class with "*" in front limits
-      the scope to anything under this component's
-      elements. */
-    * :global(.myClass) {
-        font-style: italic;
+    h1 {
+        font: bold 2.2em "Roboto", sans-serif;
+        text-align: center;
     }
+
+    * :global(.centered) {
+        height: 3em;
+        display: flex;
+        justify-content: center;
+        margin-left: auto;
+        margin-right: auto;
+        align-items: center;
+        text-align: center;
+        width: 70%;
+    }
+
+    /*.text{*/
+    /*    text-align: center;*/
+    /*    font: 0.9em "Roboto", sans-serif;*/
+    /*}*/
 </style>
 
