@@ -1,29 +1,41 @@
 <div>
-    <LayoutGrid>
-        <Cell span="{12}">
-            <h1>Inscription bénévole aux events ESN</h1>
-        </Cell>
+    <form method="POST" action="?/login">
+        <LayoutGrid>
+            <Cell span="{12}">
+                <h1>Inscription bénévole aux events ESN</h1>
+            </Cell>
 
-<!--        <Cell span="{12}">-->
-<!--            <p class="text">Entre ici l'email utilisé pour ton inscription sur AssoConnect !</p>-->
-<!--        </Cell>-->
+            <Cell span="{12}">
+                <Textfield class="centered" variant="outlined" bind:value={emailValue} label="Email" type="email"
+                           input$name="email"
+                           required invalid>
 
-
-        <Cell span="{12}">
-                <Textfield class="centered" variant="outlined" bind:value={emailValue} label="Email" type="email" required invalid>
-                    <HelperText class= "centered" slot="helper">Entre ici l'email utilisé pour ton inscription sur AssoConnect !</HelperText>
+                    <HelperText class="centered" slot="helper">Entre ici l'email utilisé pour ton inscription sur
+                        AssoConnect !
+                    </HelperText>
                 </Textfield>
-        </Cell>
+                {#if form?.missing}
+                    <p class="error">Tu n'as pas saisi d'email
+                    </p>
+                {/if}
+                {#if form?.incorrect}
+                    <p class="error">L'email saisi n'est pas reconnu
+                    </p>
+                {/if}
+            </Cell>
 
 
+            <Cell span="{12}">
+                <Actions>
+                    <Button class="centered" variant="raised">
+                        <Label>Valider</Label>
+                    </Button>
+                </Actions>
+            </Cell>
 
-        <Cell span="{12}">
-                <Button class="centered" variant="raised">
-                    <Label>Valider</Label>
-                </Button>
-        </Cell>
 
-    </LayoutGrid>
+        </LayoutGrid>
+    </form>
 </div>
 
 
@@ -32,6 +44,10 @@
     import Textfield from "@smui/textfield";
     import LayoutGrid, {Cell} from '@smui/layout-grid';
     import HelperText from "@smui/textfield/helper-text";
+    import type {ActionData} from './$types';
+    import {Actions} from "@smui/card";
+
+    export let form: ActionData;
 
     let emailValue = ''
 </script>
@@ -51,6 +67,12 @@
         align-items: center;
         text-align: center;
         width: 70%;
+    }
+
+    * :global(.error) {
+        font: 1em "Roboto", sans-serif;
+        color: #ff3e00;
+        text-align: center;
     }
 
     /*.text{*/
