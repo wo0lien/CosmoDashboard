@@ -10,7 +10,7 @@
 
 
         <Cell span="{12}">
-                <Textfield class="centered" variant="outlined" bind:value={emailValue} label="Email">
+                <Textfield class="centered" variant="outlined" bind:value={emailValue} label="Email" type="email" required invalid>
                     <HelperText class= "centered" slot="helper">Entre ici l'email utilisé pour ton inscription sur AssoConnect !</HelperText>
                 </Textfield>
         </Cell>
