@@ -30,7 +30,7 @@
                     <Section align="end">
                         {#if !upcoming_events[i].isRegistered}
                             <form method='POST' action="?/register">
-                                <input type="text" hidden id="event_id" name="event_id" placeholder={upcoming_events[i].Id}/>
+                                <input type="text" hidden id="event_id" name="event_id" value={upcoming_events[i].Id}/>
                                 <Button variant="raised">
                                     <Label>Je veux organiser</Label>
                                     <i class="material-icons" aria-hidden="true">arrow_forward</i>

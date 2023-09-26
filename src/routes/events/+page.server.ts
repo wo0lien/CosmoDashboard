@@ -31,7 +31,7 @@ export const load: PageServerLoad = async ({cookies, url}) => {
             sort: 'Start',
         });
 
-        console.log(events.list[1])
+        //console.log(events.list[0])
 
         for (const value of events.list) {
             //formats start and end event dates
@@ -47,6 +47,8 @@ export const load: PageServerLoad = async ({cookies, url}) => {
             value.isRegistered = false
 
             // get the volunteer info
+            //TODO à optimiser
+
             // @ts-ignore
             for (const volunteer of value.nc_curg___nc_m2m_w5i3lbdpwrs) {
                 const volunteers_list = await api.dbTableRow.list('v1', 'p1d5e0hzwz1r39a', 'Volunteers', {
@@ -89,6 +91,7 @@ export const actions = {
         const event_id = data.get('event_id');
 
         console.log(event_id)
+        console.log('yo je veux enregstrert pour' + event_id)
 
         const user_email = cookies.get('volunteer_email');
 
@@ -103,23 +106,12 @@ export const actions = {
         });
         console.log(registered_volunteers)
 
-        // @ts-ignore
-        const new_volunteers = registered_volunteers.list.push({
-            // @ts-ignore
-            table2_id: user_id.Id, table1_id: parseInt(event_id)
-        })
 
         if (typeof event_id === "string") {
-            await api.dbTableRow.bulkUpdate('v1', 'p1d5e0hzwz1r39a', 'Events', [
-                {
-                    Id: parseInt(event_id),
-                    // @ts-ignore
-                    // Volunteers: registered_volunteers.Volunteers + 1,
-                    // @ts-ignore
-                    nc_curg___nc_m2m_w5i3lbdpwrs: new_volunteers
-                }
-            ])
+            // @ts-ignore
+            await api.dbTableRow.nestedAdd('v1', 'p1d5e0hzwz1r39a', 'Events', parseInt(event_id), 'mm', 'Volunteers', user_id.Id);
         }else{
+            console.log("fail")
             return fail(500)
         }
 
