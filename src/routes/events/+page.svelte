@@ -4,10 +4,11 @@
             <Title>CosmoEvents</Title>
         </Section>
         <Section align="end" toolbar>
-            <IconButton class="material-icons" aria-label="Se déconnecter"
-            >logout
-            </IconButton
-            >
+            <form method=POST action="?/logout">
+                <IconButton class="material-icons" aria-label="Se déconnecter"
+                >logout
+                </IconButton>
+            </form>
         </Section>
     </Row>
 </TopAppBar>
@@ -16,22 +17,20 @@
 
 <LayoutGrid>
     <Cell span="{12}">
-            <Card>
-                <Content class="card-content-title">CosmoApéro</Content>
-                <Content class="card-content">Date : 26/09/2023</Content>
-                <Content class="card-content">Lieu : Bar</Content>
-                <Content class="card-content">Bénévoles déjà inscrits : Tom S., Antoine M.</Content>
-                <Row>
-                    <Section align="end">
-                        <Actions>
-                            <Button variant="raised" on:click={() => clicked++}>
-                                <Label>S'inscrire</Label>
-                                <i class="material-icons" aria-hidden="true">arrow_forward</i>
-                            </Button>
-                        </Actions>
-                    </Section>
-                </Row>
-            </Card>
+        <Card>
+            <Content class="card-content-title">CosmoApéro</Content>
+            <Content class="card-content">Date : 26/09/2023</Content>
+            <Content class="card-content">Lieu : Bar</Content>
+            <Content class="card-content">Bénévoles déjà inscrits : Tom S., Antoine M.</Content>
+            <Row>
+                <Section align="end">
+                        <Button variant="raised" on:click={() => clicked++}>
+                            <Label>Je veux organiser</Label>
+                            <i class="material-icons" aria-hidden="true">arrow_forward</i>
+                        </Button>
+                </Section>
+            </Row>
+        </Card>
     </Cell>
 </LayoutGrid>
 
@@ -53,6 +52,11 @@
     let clicked = 0;
 
     let topAppBar: TopAppBar;
+
+    function logout() {
+
+    }
+
 </script>
 
 <style>
@@ -72,6 +76,7 @@
 
     :global(.card-content) {
         font: 1em "Roboto", sans-serif;
-        line-height: 0.1em;
+        padding-top: 0.5em;
+        padding-bottom: 0.5em;
     }
 </style>

@@ -26,11 +26,9 @@
 
 
             <Cell span="{12}">
-                <Actions>
                     <Button class="centered" variant="raised">
                         <Label>Valider</Label>
                     </Button>
-                </Actions>
             </Cell>
 
 

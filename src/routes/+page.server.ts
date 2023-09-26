@@ -1,10 +1,9 @@
 import type {PageServerLoad, Actions} from './$types';
 import {fail, redirect} from "@sveltejs/kit";
-import {goto} from "$app/navigation";
 import {Api} from 'nocodb-sdk'
 
 const api = new Api({
-    baseURL: 'http://192.168.0.20:8081',
+    baseURL: 'https://nocodb.benevoles.cosmolyon.com',
     headers: {
         'xc-token': 'SGMexfJH5IJuJpbaoDgBpgN6E9eGi7kvRYe79Q8M'
     }
@@ -18,7 +17,7 @@ export const load: PageServerLoad = async ({cookies}) => {
         console.log('cookie trouvé')
         const user = await api.dbTableRow.findOne('v1', 'p1d5e0hzwz1r39a', 'Volunteers', {
             fields: ['Email'],
-            where: user_cookie
+            where: '(Email,eq,' + user_cookie + ')'
         })
         console.log('user : ' + user)
         if (user) {
