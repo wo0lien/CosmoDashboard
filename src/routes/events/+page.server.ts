@@ -13,16 +13,14 @@ const api = new Api({
 
 // @ts-ignore
 export const load: PageServerLoad = async ({cookies, url}) => {
-    console.log('cherche cookie')
+
     const user_cookie = cookies.get('volunteer_email');
 
     if (user_cookie) {
-        console.log('cookie trouvé')
         const user = await api.dbTableRow.findOne('v1', 'p1d5e0hzwz1r39a', 'Volunteers', {
             fields: ['Email'],
             where: '(Email,eq,' + user_cookie + ')'
         })
-        console.log('user : ' + user)
 
         if (!user) {
             throw redirect(303, '/')
@@ -32,6 +30,8 @@ export const load: PageServerLoad = async ({cookies, url}) => {
             where: '(Start,ge,today)',
             sort: 'Start',
         });
+
+        console.log(events.list[1])
 
         for (const value of events.list) {
             //formats start and end event dates
@@ -56,7 +56,6 @@ export const load: PageServerLoad = async ({cookies, url}) => {
                     where: '(Id,eq,' + volunteer.table2_id + ')'
                 });
 
-                console.log(volunteers_list.list)
                 // @ts-ignore
                 const volunteers_name = volunteers_list.list
                 // @ts-ignore
@@ -74,16 +73,9 @@ export const load: PageServerLoad = async ({cookies, url}) => {
 
         }
 
-        // const volunteers = await api.dbTableRow.list('v1', 'p1d5e0hzwz1r39a', 'Volunteers', {
-        //     sort: 'Id',
-        // });
-        //
-        // console.log(volunteers.list[1]);
-
         return {upcoming_events: events.list}
     }
 
-    console.log('pas de cookie')
     throw redirect(303, '/');
 };
 
@@ -93,7 +85,45 @@ export const actions = {
         throw redirect(303, '/')
     },
     register: async ({cookies, request, url}) =>{
+        const data = await request.formData();
+        const event_id = data.get('event_id');
 
+        console.log(event_id)
+
+        const user_email = cookies.get('volunteer_email');
+
+        const user_id = await api.dbTableRow.findOne('v1', 'p1d5e0hzwz1r39a', 'Volunteers', {
+            fields: ['Id'],
+            where: '(Email,eq,' + user_email + ')'
+        })
+
+        const registered_volunteers = await api.dbTableRow.list('v1', 'p1d5e0hzwz1r39a', 'Events', {
+            fields: ['nc_curg___nc_m2m_w5i3lbdpwrs'],
+            where: '(Id,eq,'+event_id+')',
+        });
+        console.log(registered_volunteers)
+
+        // @ts-ignore
+        const new_volunteers = registered_volunteers.list.push({
+            // @ts-ignore
+            table2_id: user_id.Id, table1_id: parseInt(event_id)
+        })
+
+        if (typeof event_id === "string") {
+            await api.dbTableRow.bulkUpdate('v1', 'p1d5e0hzwz1r39a', 'Events', [
+                {
+                    Id: parseInt(event_id),
+                    // @ts-ignore
+                    // Volunteers: registered_volunteers.Volunteers + 1,
+                    // @ts-ignore
+                    nc_curg___nc_m2m_w5i3lbdpwrs: new_volunteers
+                }
+            ])
+        }else{
+            return fail(500)
+        }
+
+        return { registerSuccess: true }
     },
 } satisfies Actions;
 

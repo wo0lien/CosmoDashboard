@@ -16,23 +16,26 @@
 </AutoAdjust>
 
 <LayoutGrid>
-    {#each Array(data.upcoming_events.length) as _unused, i}
+    {#each Array(upcoming_events.length) as _unused, i}
         <Cell span="{12}">
             <Card>
-                <Content class="card-content-title">{data.upcoming_events[i].Title}</Content>
-                <Content class="card-content">Date : {data.upcoming_events[i].Start}
-                    à {data.upcoming_events[i].End}</Content>
-                <Content class="card-content">Lieu : {data.upcoming_events[i].Place}</Content>
+                <Content class="card-content-title">{upcoming_events[i].Title}</Content>
+                <Content class="card-content">Date : {upcoming_events[i].Start}
+                    à {upcoming_events[i].End}</Content>
+                <Content class="card-content">Lieu : {upcoming_events[i].Place}</Content>
                 <Content class="card-content">Nombre de bénévoles attendu
-                    : {data.upcoming_events[i].NbVolunteers}</Content>
-                <Content class="card-content">Bénévoles déjà inscrits : {data.upcoming_events[i].Volunteers}</Content>
+                    : {upcoming_events[i].NbVolunteers}</Content>
+                <Content class="card-content">Bénévoles déjà inscrits : {upcoming_events[i].Volunteers}</Content>
                 <Row>
                     <Section align="end">
-                        {#if !data.upcoming_events[i].isRegistered}
-                            <Button variant="raised">
-                                <Label>Je veux organiser</Label>
-                                <i class="material-icons" aria-hidden="true">arrow_forward</i>
-                            </Button>
+                        {#if !upcoming_events[i].isRegistered}
+                            <form method='POST' action="?/register">
+                                <input type="text" hidden id="event_id" name="event_id" placeholder={upcoming_events[i].Id}/>
+                                <Button variant="raised">
+                                    <Label>Je veux organiser</Label>
+                                    <i class="material-icons" aria-hidden="true">arrow_forward</i>
+                                </Button>
+                            </form>
                         {:else}
                             <Button variant="raised" disabled>
                                 <Label>Déjà inscrit</Label>
@@ -64,6 +67,7 @@
     import type {PageData, ActionData} from './$types';
 
     export let data: PageData;
+    $: upcoming_events = data.upcoming_events;
 
     export let form: ActionData;
 
