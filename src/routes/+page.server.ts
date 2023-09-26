@@ -52,8 +52,10 @@ export const actions = {
             return fail(400, {email, incorrect: true});
         }
 
+        let exp_date = new Date()
+        exp_date.setDate(Date.now()+3091200)
 
-        cookies.set('volunteer_email', email.toString());
+        cookies.set('volunteer_email', email.toString(), {maxAge: Date.now()+3091200, secure: false, path: '/'}); //TODO : secure false only for dev purpose
 
 
         throw redirect(303, '/events')

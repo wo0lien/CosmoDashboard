@@ -20,16 +20,25 @@
         <Cell span="{12}">
             <Card>
                 <Content class="card-content-title">{data.upcoming_events[i].Title}</Content>
-                <Content class="card-content">Date : {data.upcoming_events[i].Start} à {data.upcoming_events[i].End}</Content>
+                <Content class="card-content">Date : {data.upcoming_events[i].Start}
+                    à {data.upcoming_events[i].End}</Content>
                 <Content class="card-content">Lieu : {data.upcoming_events[i].Place}</Content>
-                <Content class="card-content">Nombre de bénévoles attendu : {data.upcoming_events[i].NbVolunteers}</Content>
+                <Content class="card-content">Nombre de bénévoles attendu
+                    : {data.upcoming_events[i].NbVolunteers}</Content>
                 <Content class="card-content">Bénévoles déjà inscrits : {data.upcoming_events[i].Volunteers}</Content>
                 <Row>
                     <Section align="end">
-                        <Button variant="raised" on:click={() => clicked++}>
-                            <Label>Je veux organiser</Label>
-                            <i class="material-icons" aria-hidden="true">arrow_forward</i>
-                        </Button>
+                        {#if !data.upcoming_events[i].isRegistered}
+                            <Button variant="raised">
+                                <Label>Je veux organiser</Label>
+                                <i class="material-icons" aria-hidden="true">arrow_forward</i>
+                            </Button>
+                        {:else}
+                            <Button variant="raised" disabled>
+                                <Label>Déjà inscrit</Label>
+                                <i class="material-icons" aria-hidden="true">done</i>
+                            </Button>
+                        {/if}
                     </Section>
                 </Row>
             </Card>
@@ -58,13 +67,7 @@
 
     export let form: ActionData;
 
-    let clicked = 0;
-
     let topAppBar: TopAppBar;
-
-    function logout() {
-
-    }
 
 </script>
 

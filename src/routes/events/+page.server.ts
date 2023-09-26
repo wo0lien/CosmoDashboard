@@ -12,7 +12,7 @@ const api = new Api({
 })
 
 // @ts-ignore
-export const load: PageServerLoad = async ({cookies}) => {
+export const load: PageServerLoad = async ({cookies, url}) => {
     console.log('cherche cookie')
     const user_cookie = cookies.get('volunteer_email');
 
@@ -23,11 +23,10 @@ export const load: PageServerLoad = async ({cookies}) => {
             where: '(Email,eq,' + user_cookie + ')'
         })
         console.log('user : ' + user)
+
         if (!user) {
             throw redirect(303, '/')
         }
-
-        //TODO get les data des events en cours
 
         const events = await api.dbTableRow.list('v1', 'p1d5e0hzwz1r39a', 'Events', {
             where: '(Start,ge,today)',
@@ -44,19 +43,30 @@ export const load: PageServerLoad = async ({cookies}) => {
             // @ts-ignore
             value.Volunteers = []
 
+            // @ts-ignore
+            value.isRegistered = false
+
             // get the volunteer info
             // @ts-ignore
             for (const volunteer of value.nc_curg___nc_m2m_w5i3lbdpwrs) {
                 const volunteers_list = await api.dbTableRow.list('v1', 'p1d5e0hzwz1r39a', 'Volunteers', {
-                    fields: ['Firstname', 'Lastname'],
+                    fields: ['Firstname', 'Lastname', 'Email'],
                     sort: 'Id',
                     // @ts-ignore
                     where: '(Id,eq,' + volunteer.table2_id + ')'
                 });
+
+                console.log(volunteers_list.list)
                 // @ts-ignore
                 const volunteers_name = volunteers_list.list
                 // @ts-ignore
                 const volunteers_name_corrected = volunteers_name[0].Firstname + ' ' +volunteers_name[0].Lastname.slice(0,1) + '. '
+
+                // @ts-ignore
+                if (volunteers_name[0].Email === user_cookie){
+                    // @ts-ignore
+                    value.isRegistered = true
+                }
 
                 // @ts-ignore
                 value.Volunteers.push(volunteers_name_corrected)
@@ -81,6 +91,9 @@ export const actions = {
     logout: async ({cookies, request, url}) => {
         cookies.delete('volunteer_email')
         throw redirect(303, '/')
+    },
+    register: async ({cookies, request, url}) =>{
+
     },
 } satisfies Actions;
 
