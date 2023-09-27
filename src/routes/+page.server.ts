@@ -2,6 +2,7 @@ import type {PageServerLoad, Actions} from './$types';
 import {fail, redirect} from "@sveltejs/kit";
 import {Api} from 'nocodb-sdk'
 import 'dotenv/config'
+import {NODE_ENV} from "$env/static/private";
 
 const api = new Api({
     baseURL: process.env.DB_URL,
@@ -48,7 +49,15 @@ export const actions = {
         let exp_date = new Date()
         exp_date.setDate(Date.now()+3091200)
 
-        cookies.set('volunteer_email', email.toString(), {maxAge: Date.now()+3091200, secure: false, path: '/'}); //TODO : secure false only for dev purpose
+        if (NODE_ENV === 'development'){
+            console.log("DEV_MODE");
+            //secure false only for dev purpose
+            cookies.set('volunteer_email', email.toString(), {maxAge: Date.now()+3091200, secure: false, path: '/'});
+        }else{
+            console.log("PROD_MODE")
+            cookies.set('volunteer_email', email.toString(), {maxAge: Date.now()+3091200, secure: true, path: '/'});
+        }
+
 
         throw redirect(303, '/events')
 
