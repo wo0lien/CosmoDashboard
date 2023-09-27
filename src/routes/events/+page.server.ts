@@ -1,7 +1,7 @@
 import type {PageServerLoad, Actions} from './$types';
 import {fail, redirect} from "@sveltejs/kit";
 import {Api} from 'nocodb-sdk'
-import * as moment from 'moment-timezone'
+import moment from 'moment-timezone'
 import 'dotenv/config'
 
 const api = new Api({
