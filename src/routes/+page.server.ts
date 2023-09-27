@@ -1,11 +1,12 @@
 import type {PageServerLoad, Actions} from './$types';
 import {fail, redirect} from "@sveltejs/kit";
 import {Api} from 'nocodb-sdk'
+import 'dotenv/config'
 
 const api = new Api({
-    baseURL: 'https://nocodb.benevoles.cosmolyon.com',
+    baseURL: process.env.DB_URL,
     headers: {
-        'xc-token': 'SGMexfJH5IJuJpbaoDgBpgN6E9eGi7kvRYe79Q8M'
+        'xc-token': process.env.DB_API_KEY
     }
 })
 
