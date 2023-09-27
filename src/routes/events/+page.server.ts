@@ -2,7 +2,6 @@ import type {PageServerLoad, Actions} from './$types';
 import {fail, redirect} from "@sveltejs/kit";
 import {Api} from 'nocodb-sdk'
 import * as moment from 'moment-timezone'
-import {formatPostcssSourceMap} from "vite";
 
 const api = new Api({
     baseURL: 'https://nocodb.benevoles.cosmolyon.com:443',
@@ -47,24 +46,17 @@ export const load: PageServerLoad = async ({cookies, url}) => {
             value.isRegistered = false
 
             // get the volunteer info
-            //TODO à optimiser
 
             // @ts-ignore
-            for (const volunteer of value.nc_curg___nc_m2m_w5i3lbdpwrs) {
-                const volunteers_list = await api.dbTableRow.list('v1', 'p1d5e0hzwz1r39a', 'Volunteers', {
-                    fields: ['Firstname', 'Lastname', 'Email'],
-                    sort: 'Id',
-                    // @ts-ignore
-                    where: '(Id,eq,' + volunteer.table2_id + ')'
-                });
+            const volunteer_list = await api.dbTableRow.nestedList('v1', 'p1d5e0hzwz1r39a', 'Events', value.Id, 'mm', 'Volunteers')
+            // @ts-ignore
+
+            for (const volunteer of volunteer_list.list) {
+                // @ts-ignore
+                const volunteers_name_corrected = volunteer.Firstname + ' ' + volunteer.Lastname.slice(0, 1) + '. '
 
                 // @ts-ignore
-                const volunteers_name = volunteers_list.list
-                // @ts-ignore
-                const volunteers_name_corrected = volunteers_name[0].Firstname + ' ' +volunteers_name[0].Lastname.slice(0,1) + '. '
-
-                // @ts-ignore
-                if (volunteers_name[0].Email === user_cookie){
+                if (volunteer.Email === user_cookie) {
                     // @ts-ignore
                     value.isRegistered = true
                 }
@@ -86,12 +78,9 @@ export const actions = {
         cookies.delete('volunteer_email')
         throw redirect(303, '/')
     },
-    register: async ({cookies, request, url}) =>{
+    register: async ({cookies, request, url}) => {
         const data = await request.formData();
         const event_id = data.get('event_id');
-
-        console.log(event_id)
-        console.log('yo je veux enregstrert pour' + event_id)
 
         const user_email = cookies.get('volunteer_email');
 
@@ -100,22 +89,15 @@ export const actions = {
             where: '(Email,eq,' + user_email + ')'
         })
 
-        const registered_volunteers = await api.dbTableRow.list('v1', 'p1d5e0hzwz1r39a', 'Events', {
-            fields: ['nc_curg___nc_m2m_w5i3lbdpwrs'],
-            where: '(Id,eq,'+event_id+')',
-        });
-        console.log(registered_volunteers)
-
-
         if (typeof event_id === "string") {
             // @ts-ignore
             await api.dbTableRow.nestedAdd('v1', 'p1d5e0hzwz1r39a', 'Events', parseInt(event_id), 'mm', 'Volunteers', user_id.Id);
-        }else{
+        } else {
             console.log("fail")
             return fail(500)
         }
 
-        return { registerSuccess: true }
+        return {registerSuccess: true}
     },
 } satisfies Actions;
 
